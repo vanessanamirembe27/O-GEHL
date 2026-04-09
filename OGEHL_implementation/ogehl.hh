@@ -1,5 +1,5 @@
 //This version is runnable on gem5, but the performance is not verified yet!
-//I will include annotation soon --Zhongkun Cheng
+//I will include comments soon --Zhongkun Cheng
 #ifndef __CPU_PRED_OGEHL_HH__
 #define __CPU_PRED_OGEHL_HH__
 
