@@ -1,5 +1,9 @@
 //This version is runnable on gem5, but the performance is not verified yet!
+//This file should be created at gem5/src/cpu/pred
 //I will include comments soon --Zhongkun Cheng
+
+//After update all changes, do not forget to rebuild gem5!
+
 #ifndef __CPU_PRED_OGEHL_HH__
 #define __CPU_PRED_OGEHL_HH__
 
