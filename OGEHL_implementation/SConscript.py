@@ -1,6 +1,6 @@
 #this file is located at gem5/src/cpu/pred
 #replace this file with the following code (I deleted the original copyright comments for cleaner view) 
-#*or* add 'GEHLBP' and 'OGEHLBP' at the end of SimObject, and add Source('gehl.cc') Source('ogehl.cc') if you want to keep the original file. 
+#*or* add 'OGEHLBP' at the end of SimObject, and add Source('ogehl.cc') if you want to keep the original file. 
 
 Import('*')
 
