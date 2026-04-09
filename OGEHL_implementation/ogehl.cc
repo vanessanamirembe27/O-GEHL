@@ -1,4 +1,4 @@
-//I will include annotations soon --Zhongkun
+//I will include comments soon --Zhongkun
 
 #include "cpu/pred/ogehl.hh"
 
