@@ -1,4 +1,4 @@
-# add this to BranchPredictor.py
+# add this to BranchPredictor.py located at gem5/src/cpu/pred
 
 class OGEHLBP(ConditionalPredictor):
     type = 'OGEHLBP'
