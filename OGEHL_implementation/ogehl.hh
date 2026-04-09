@@ -4,6 +4,16 @@
 
 //After update all changes, do not forget to rebuild gem5!
 
+//import OGEHL to python script ↓
+/*
+from m5.objects import OGEHLBP
+for core in processor._switchable_cores["switch"]:
+    bp = BranchPredictor()
+    bp.conditionalBranchPred =  OGEHLBP()
+    core.core.branchPred = bp 
+*/
+
+
 #ifndef __CPU_PRED_OGEHL_HH__
 #define __CPU_PRED_OGEHL_HH__
 
