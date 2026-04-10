@@ -1,0 +1,5 @@
+April 9 by Zhongkun
+Warmup: 4 Billion
+Measurement: 1 Billion
+Misprediction rate = 9123843/845682536 = 1.07%
+Difference between instruction fetched and committed = 4186133840 - 1000000004 = 3.18 Billion
