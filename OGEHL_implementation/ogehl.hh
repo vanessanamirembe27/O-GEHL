@@ -1,6 +1,5 @@
 //This version is runnable on gem5, but the performance is not verified yet!
 //This file should be created at gem5/src/cpu/pred
-//I will include comments soon --Zhongkun Cheng
 
 //After update all changes, do not forget to rebuild gem5!
 
@@ -30,30 +29,32 @@ namespace gem5
 namespace branch_prediction
 {
 
+//O-GEHL branch predictor: GEHL core + dynamic theta (threshold) + dynamic history length
+
 class OGEHLBP : public ConditionalPredictor
 {
   public:
     struct BPHistory
     {
-        uint64_t globalHistoryReg;
-        int outputSum;
-        bool finalPred;
-        bool usedLongHistories;
-        std::vector<unsigned> tableIndices;
+        uint64_t globalHistoryReg;    //global history 
+        int outputSum;                //|S|, update global history if S < theta or prediction wrong. 
+        bool finalPred;               //final taken/not taken dicision
+        bool usedLongHistories;       //whether long history mode is used
+        std::vector<unsigned> tableIndices;    //table indices used during look up
     };
 
     OGEHLBP(const OGEHLBPParams &params);
 
-    bool lookup(ThreadID tid, Addr pc, void *&bp_history);
+    bool lookup(ThreadID tid, Addr pc, void *&bp_history);        //make prediction
 
     void updateHistories(ThreadID tid, Addr pc, bool uncond, bool taken,
                          Addr target, const StaticInstPtr &inst,
-                         void *&bp_history);
+                         void *&bp_history);                      //Speculatively update history after prediction
 
-    void squash(ThreadID tid, void *&bp_history);
+    void squash(ThreadID tid, void *&bp_history);                //restore saved history after squash
 
     void update(ThreadID tid, Addr pc, bool taken, void *&bp_history,
-                bool squashed, const StaticInstPtr &inst, Addr target);
+                bool squashed, const StaticInstPtr &inst, Addr target);    //update global history after the actual branch outcome is known
 
   private:
     void updateGlobalHistReg(ThreadID tid, bool taken);
