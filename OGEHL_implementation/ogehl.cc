@@ -256,8 +256,8 @@ void //shift new branch outcome into global history
 OGEHLBP::updateGlobalHistReg(ThreadID tid, bool taken)
 {
     globalHistoryReg[tid] =
-        ((globalHistoryReg[tid] << 1) |
-         (taken ? 1 : 0)) & historyRegisterMask;
+        ((globalHistoryReg[tid] << 1) | //global history register is a shift register
+         (taken ? 1 : 0)) & historyRegisterMask; 
 }
 
 unsigned // compute index = (PC ^ history) & table size (mask)
