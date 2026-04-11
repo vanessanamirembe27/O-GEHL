@@ -1,5 +1,58 @@
 //This file should be created at gem5/src/cpu/pred
 
+/*
+ * O-GEHL Branch Predictor
+ *
+ * Overview
+ * --------
+ * O-GEHL is an improved version of GEHL (Geometric History Length).
+ * The base GEHL predictor uses multiple prediction tables, where each
+ * table is indexed with a different global history length. These history
+ * lengths grow geometrically, so some tables focus on very recent branch
+ * behavior while others capture long-range correlations.
+ *
+ * In GEHL:
+ *  - Each table stores saturating counters.
+ *  - For a branch lookup, one counter is read from each table.
+ *  - The counters are converted to signed values and summed.
+ *  - If the total sum is >= 0, the predictor outputs taken.
+ *    Otherwise it outputs not taken.
+ *  - The predictor updates its counters only when:
+ *      1) the prediction was wrong, or
+ *      2) the prediction was weak (|sum| < theta).
+ *
+ * O-GEHL Improvements
+ * -------------------
+ * O-GEHL keeps the GEHL core, but adds two adaptive mechanisms:
+ *
+ * 1. Dynamic Threshold Fitting
+ * ----------------------------
+ * In plain GEHL, theta is fixed. Theta controls when the predictor should
+ * update on a "weak" prediction.
+ *
+ * In O-GEHL, theta is adjusted at runtime:
+ *  - if many wrong predictions happen, theta is increased 
+ *  - if many correct-but-weak predictions happen, theta is decreased
+ *
+ * 2. Dynamic History-Length Fitting
+ * ---------------------------------
+ * In plain GEHL, each table always uses one fixed history length.
+ *
+ * In O-GEHL, some tables can switch between:
+ *  - a short history length
+ *  - a long history length
+ *
+ * This is controlled by an aliasing counter (AC).
+ * The idea is:
+ *  - if long histories appear useful, enable long-history mode
+ *  - if long histories create too much aliasing/conflict, switch back
+ *    to short-history mode
+ *
+ * A small tag table is used to estimate whether updates are coming from
+ * the same branch/path pattern or from conflicting ones. That information
+ * drives the aliasing counter.
+ */
+
 #include "cpu/pred/ogehl.hh"
 
 #include <algorithm>
@@ -237,13 +290,15 @@ OGEHLBP::computeIndex(Addr pc, uint64_t history, unsigned table) const
     return idx;
 }
 
-void //dynamic theta update
+//dynamic theta update ( history is being updated when S < theta, so it update more often when theta is large and vice versa)
+//the goal of this part is to let update_due_to_miss / update_due_to_threshold ~=1
+void 
 OGEHLBP::updateThreshold(bool wrong, bool weak)
 {
     int tcMax = (1 << (tcBits - 1)) - 1;
     int tcMin = -(1 << (tcBits - 1));
 
-    if (wrong) {
+    if (wrong) {          //when mispredict -> increment tc so that it update more frequent
         if (tc < tcMax) {
             tc++;
         }
@@ -256,7 +311,7 @@ OGEHLBP::updateThreshold(bool wrong, bool weak)
         }
     }
 
-    if (!wrong && weak) {
+    if (!wrong && weak) { //when prediction correct but low confidence -> decrease theta so it update less frequent
         if (tc > tcMin) {
             tc--;
         }
