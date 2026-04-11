@@ -30,31 +30,32 @@ namespace branch_prediction
 {
 
 //O-GEHL branch predictor: GEHL core + dynamic theta (threshold) + dynamic history length
+//Specific annotations are included in ogehl.cc file
 
 class OGEHLBP : public ConditionalPredictor
 {
   public:
     struct BPHistory
     {
-        uint64_t globalHistoryReg;    //global history 
-        int outputSum;                //|S|, update global history if S < theta or prediction wrong. 
-        bool finalPred;               //final taken/not taken dicision
-        bool usedLongHistories;       //whether long history mode is used
-        std::vector<unsigned> tableIndices;    //table indices used during look up
+        uint64_t globalHistoryReg;  
+        int outputSum; 
+        bool finalPred;
+        bool usedLongHistories;
+        std::vector<unsigned> tableIndices;
     };
 
     OGEHLBP(const OGEHLBPParams &params);
 
-    bool lookup(ThreadID tid, Addr pc, void *&bp_history);        //make prediction
+    bool lookup(ThreadID tid, Addr pc, void *&bp_history);
 
     void updateHistories(ThreadID tid, Addr pc, bool uncond, bool taken,
                          Addr target, const StaticInstPtr &inst,
-                         void *&bp_history);                      //Speculatively update history after prediction
+                         void *&bp_history); 
 
-    void squash(ThreadID tid, void *&bp_history);                //restore saved history after squash
+    void squash(ThreadID tid, void *&bp_history);
 
     void update(ThreadID tid, Addr pc, bool taken, void *&bp_history,
-                bool squashed, const StaticInstPtr &inst, Addr target);    //update global history after the actual branch outcome is known
+                bool squashed, const StaticInstPtr &inst, Addr target);
 
   private:
     void updateGlobalHistReg(ThreadID tid, bool taken);
