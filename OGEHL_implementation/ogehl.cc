@@ -1,5 +1,4 @@
 //This file should be created at gem5/src/cpu/pred
-//I will include comments soon --Zhongkun
 
 #include "cpu/pred/ogehl.hh"
 
@@ -15,42 +14,42 @@ namespace gem5
 namespace branch_prediction
 {
 
-OGEHLBP::OGEHLBP(const OGEHLBPParams &params)
+OGEHLBP::OGEHLBP(const OGEHLBPParams &params)    //Constructor: initialize parameters
     : ConditionalPredictor(params),
-      globalHistoryReg(params.numThreads, 0),
-      globalHistoryBits(params.global_history_bits),
-      numTables(params.num_tables),
-      tableSize(params.table_size),
-      ctrBits(params.counter_bits),
-      theta(params.theta),
-      maxTheta(params.max_theta),
-      tcBits(params.tc_bits),
+      globalHistoryReg(params.numThreads, 0),    //register that stores actual branch outcomes
+      globalHistoryBits(params.global_history_bits),    //size of global history, i took 200
+      numTables(params.num_tables),              //# of tables in GEHL, I took 8
+      tableSize(params.table_size),              //size of table (or size of array of counters), I took 2048             
+      ctrBits(params.counter_bits),              //number of bits of a counter
+      theta(params.theta),                       //threshold theta, initialized with 12
+      maxTheta(params.max_theta),                //maximum value for theta, 31
+      tcBits(params.tc_bits),                    //control how often theta changes. I took 7 bits so that it ranges from [-64, 63]
       tc(0),
-      shortHistoryLengths(params.short_history_lengths),
-      longHistoryLengths(params.long_history_lengths),
-      useLongHistories(false),
-      acBits(params.ac_bits),
+      shortHistoryLengths(params.short_history_lengths),    //[0, 3, 5, 8, 12, 19, 31, 49], roughly geometric growth. 
+      longHistoryLengths(params.long_history_lengths),      //[0, 0, 79, 0, 125, 0, 200, 0] T2, T4, T6 have long history length option so they are non zero, others are fixed so length = 0. 
+      useLongHistories(false),                    //long history switch
+      acBits(params.ac_bits),                    //Aliasing counter, I took 9 bits. 
       ac(0),
       tagTable(tableSize, 0),
       tables(numTables,
              std::vector<SatCounter8>(tableSize, SatCounter8(ctrBits)))
 {
     if (!isPowerOf2(tableSize)) {
-        fatal("OGEHL table size must be a power of 2.\n");
+        fatal("OGEHL table size must be a power of 2.\n"); //make sure table size is power of 2
     }
 
     if (shortHistoryLengths.size() != numTables) {
-        fatal("OGEHL short_history_lengths size must equal num_tables.\n");
+        fatal("OGEHL short_history_lengths size must equal num_tables.\n"); //make sure history length is equal to num tables
     }
 
     if (longHistoryLengths.size() != numTables) {
-        fatal("OGEHL long_history_lengths size must equal num_tables.\n");
+        fatal("OGEHL long_history_lengths size must equal num_tables.\n"); //same as above for long history length
     }
 
-    historyRegisterMask = mask(globalHistoryBits);
+    historyRegisterMask = mask(globalHistoryBits);                         //mask for history length
     tableIndexMask = tableSize - 1;
 
-    unsigned mid = (1 << (ctrBits - 1));
+    unsigned mid = (1 << (ctrBits - 1));                                   //initialize counters to 0
     for (unsigned i = 0; i < numTables; ++i) {
         for (unsigned j = 0; j < tableSize; ++j) {
             for (unsigned k = 0; k < mid; ++k) {
@@ -60,13 +59,13 @@ OGEHLBP::OGEHLBP(const OGEHLBPParams &params)
     }
 }
 
-bool
-OGEHLBP::isDynamicTable(unsigned table) const
+bool //switch for tables with dynamic length (same as paper written, T2, T4 and T6)
+OGEHLBP::isDynamicTable(unsigned table) const 
 {
     return (table == 2 || table == 4 || table == 6);
 }
 
-unsigned
+unsigned //return history length used by table depending on mode (long or short). 
 OGEHLBP::getHistoryLength(unsigned table) const
 {
     if (isDynamicTable(table) && useLongHistories &&
@@ -77,7 +76,7 @@ OGEHLBP::getHistoryLength(unsigned table) const
     return shortHistoryLengths[table];
 }
 
-void
+void //handle unconditional branch -> always taken
 OGEHLBP::uncondBranch(ThreadID tid, Addr pc, void *&bp_history)
 {
     BPHistory *history = new BPHistory;
@@ -91,7 +90,7 @@ OGEHLBP::uncondBranch(ThreadID tid, Addr pc, void *&bp_history)
     bp_history = static_cast<void *>(history);
 }
 
-void
+void //update global history speculatively after prediction
 OGEHLBP::updateHistories(ThreadID tid, Addr pc, bool uncond, bool taken,
                          Addr target, const StaticInstPtr &inst,
                          void *&bp_history)
@@ -105,7 +104,7 @@ OGEHLBP::updateHistories(ThreadID tid, Addr pc, bool uncond, bool taken,
     updateGlobalHistReg(tid, taken);
 }
 
-bool
+bool //Main prediction logic
 OGEHLBP::lookup(ThreadID tid, Addr branchAddr, void *&bp_history)
 {
     uint64_t historyValue = globalHistoryReg[tid];
@@ -115,8 +114,9 @@ OGEHLBP::lookup(ThreadID tid, Addr branchAddr, void *&bp_history)
     history->globalHistoryReg = historyValue;
     history->usedLongHistories = useLongHistories;
     history->tableIndices.resize(numTables);
-
-    for (unsigned i = 0; i < numTables; ++i) {
+    
+    //summation of all tables
+    for (unsigned i = 0; i < numTables; ++i) { 
         unsigned idx = computeIndex(branchAddr, historyValue, i);
         history->tableIndices[i] = idx;
 
@@ -126,13 +126,13 @@ OGEHLBP::lookup(ThreadID tid, Addr branchAddr, void *&bp_history)
     }
 
     history->outputSum = sum;
-    history->finalPred = (sum >= 0);
+    history->finalPred = (sum >= 0); //taken if S >= 0
     bp_history = static_cast<void *>(history);
 
     return history->finalPred;
 }
 
-void
+void //Restore history on misprediction
 OGEHLBP::squash(ThreadID tid, void *&bp_history)
 {
     if (bp_history == nullptr) {
@@ -146,7 +146,7 @@ OGEHLBP::squash(ThreadID tid, void *&bp_history)
     bp_history = nullptr;
 }
 
-void
+void //update predictor after branch resolves
 OGEHLBP::update(ThreadID tid, Addr branchAddr, bool taken,
                 void *&bp_history, bool squashed,
                 const StaticInstPtr &inst, Addr target)
@@ -157,22 +157,25 @@ OGEHLBP::update(ThreadID tid, Addr branchAddr, bool taken,
 
     BPHistory *history = static_cast<BPHistory *>(bp_history);
 
-    if (squashed) {
+    //if squashed, just restore correct history 
+    if (squashed) { 
         globalHistoryReg[tid] =
             ((history->globalHistoryReg << 1) |
              (taken ? 1 : 0)) & historyRegisterMask;
         return;
     }
 
+    //safety check
     if (history->tableIndices.size() != numTables) {
         delete history;
         bp_history = nullptr;
         return;
     }
-
+    
     bool wrong = (history->finalPred != taken);
-    bool weak = (std::abs(history->outputSum) < static_cast<int>(theta));
+    bool weak = (std::abs(history->outputSum) < static_cast<int>(theta)); //weak = S < theta
 
+    //update tables only when predcition wrong *or* S < theta
     if (wrong || weak) {
         for (unsigned i = 0; i < numTables; ++i) {
             unsigned idx = history->tableIndices[i];
@@ -188,7 +191,7 @@ OGEHLBP::update(ThreadID tid, Addr branchAddr, bool taken,
             }
         }
     }
-
+    //update dynamic features (adaptive theta and long/short mode), this is what distinguishes O-GEHL and GEHL 
     updateThreshold(wrong, weak);
     updateHistoryMode(branchAddr, history, wrong, weak);
 
@@ -196,7 +199,7 @@ OGEHLBP::update(ThreadID tid, Addr branchAddr, bool taken,
     bp_history = nullptr;
 }
 
-void
+void //shift new branch outcome into global history 
 OGEHLBP::updateGlobalHistReg(ThreadID tid, bool taken)
 {
     globalHistoryReg[tid] =
@@ -204,7 +207,7 @@ OGEHLBP::updateGlobalHistReg(ThreadID tid, bool taken)
          (taken ? 1 : 0)) & historyRegisterMask;
 }
 
-unsigned
+unsigned // compute index = (PC ^ history) & table size (mask)
 OGEHLBP::computeIndex(Addr pc, uint64_t history, unsigned table) const
 {
     unsigned historyLen;
@@ -234,7 +237,7 @@ OGEHLBP::computeIndex(Addr pc, uint64_t history, unsigned table) const
     return idx;
 }
 
-void
+void //dynamic theta update
 OGEHLBP::updateThreshold(bool wrong, bool weak)
 {
     int tcMax = (1 << (tcBits - 1)) - 1;
@@ -245,11 +248,11 @@ OGEHLBP::updateThreshold(bool wrong, bool weak)
             tc++;
         }
 
-        if (tc == tcMax) {
+        if (tc == tcMax) { //only update theta when theta counter reach maximum
             if (theta < maxTheta) {
                 theta++;
             }
-            tc = 0;
+            tc = 0; 
         }
     }
 
@@ -258,7 +261,7 @@ OGEHLBP::updateThreshold(bool wrong, bool weak)
             tc--;
         }
 
-        if (tc == tcMin) {
+        if (tc == tcMin) { //same for decrement theta
             if (theta > 0) {
                 theta--;
             }
@@ -268,14 +271,14 @@ OGEHLBP::updateThreshold(bool wrong, bool weak)
 }
 
 
-void
+void //dynamic history length switching
 OGEHLBP::updateHistoryMode(Addr pc, const OGEHLBP::BPHistory *history,
                            bool wrong, bool weak)
 {
     if (!(wrong || weak)) {
         return;
     }
-
+    //use longest table as reference since longest table aliasing more
     unsigned refTable = numTables - 1;
     if (refTable >= history->tableIndices.size()) {
         return;
@@ -291,22 +294,22 @@ OGEHLBP::updateHistoryMode(Addr pc, const OGEHLBP::BPHistory *history,
 
     uint8_t currentTag = static_cast<uint8_t>(pc & 1);
 
-    if (tagTable[idx] == currentTag) {
+    if (tagTable[idx] == currentTag) { //if aliasing not happened, increment ac so that prefer to long history length
         if (ac < acMax) {
             ac++;
         }
-    } else {
+    } else {    //if aliasing happened, decrement ac by 4 to prefer short history length
         ac -= 4;
         if (ac < acMin) {
             ac = acMin;
         }
     }
 
-    if (ac == acMax) {
+    if (ac == acMax) { //update switch when ac reach max
         useLongHistories = true;
     }
 
-    if (ac == acMin) {
+    if (ac == acMin) { //same for min
         useLongHistories = false;
     }
 
