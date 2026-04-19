@@ -1,0 +1,16 @@
+April 9 by Zhongkun
+benchmark: 505.mcf_r with ATOMIC warmup
+Warmup: 4 Billion
+Measurement: 1 Billion
+Misprediction rate = 9123843/845682536 = 1.07%
+Difference between instruction fetched and committed = 4186133840 - 1000000004 = 3.18 Billion
+%Uncommited = 3180000000 / 4186133840 = 75.965 %
+
+April 19 by Dom
+ogehl.cc - Zhongkun's original push
+benchmark: 505.mcf_r with ATOMIC --ref warmup
+Warmup: 4 Billion
+Measurement: 100 Million
+Misprediction Rate = 725732 / 18783055 = 3.864%
+Difference between instruction fetched and committed = 154265255 - 100000003 = 54.3 Million
+%Uncommited = 54265252 / 154265255 = 35.177%

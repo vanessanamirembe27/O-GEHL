@@ -1,0 +1,145 @@
+runcpu v6612 started at 2023-04-03 15:46:27 on "gem5-host"
+runcpu is: /home/gem5/spec2017/bin/harness/runcpu
+runcpu: runcpu --size ref --iterations 1 --config myconfig.x86.cfg --define gcc_dir=/usr --noreportable --nobuild 505.mcf_r
+toolset: linux-x86_64
+suite: CPU2017 1.1.9
+
+Locating benchmarks...found 47 benchmarks in 73 benchsets.
+Reading config file '/home/gem5/spec2017/config/myconfig.x86.cfg'
+
+1 configuration selected:
+
+ Action    Run Mode   Workload     Report Type      Benchmarks
+--------   --------   --------   ----------------   ---------------------------
+validate   rate       refrate    SPECrate2017_int   505.mcf_r                  
+-------------------------------------------------------------------------------
+
+Setting up environment for running 505.mcf_r...
+Starting runcpu for 505.mcf_r...
+Retrieving flags file (/home/gem5/spec2017/config/flags/gcc.xml)...
+Verbosity = 5
+Action    = validate
+Tune      = base,peak
+Label     = mytest-m64
+Size      = refrate
+benchmarks= 505.mcf_r
+outputs   = txt,html,cfg,pdf,csv
+username  = root
+Environment settings:
+LD_LIBRARY_PATH = "%{gcc_dir}/lib64/:%{gcc_dir}/lib/:/lib64"
+
+Benchmarks selected: 505.mcf_r
+When checking executables (/home/gem5/spec2017/benchspec/CPU/505.mcf_r/exe/mcf_r_peak.mytest-m64), no checksums were
+  found in the config file.  They will be installed after build.
+When checking executables (/home/gem5/spec2017/benchspec/CPU/505.mcf_r/exe/mcf_r_peak.mytest-m64), no checksums were
+  found in the config file.  They will be installed after build.
+Compiling Binaries
+------------------------------------------------------------------------
+COMP: "/usr/bin/gcc     -std=c99   -m64 -c -o options.o -DSPEC -DNDEBUG  -Ispec_qsort -DSPEC_AUTO_SUPPRESS_OPENMP -g -O3          -fno-strict-aliasing -fno-unsafe-math-optimizations -fno-finite-math-only -fgnu89-inline -fcommon     -DSPEC_LP64  <source>"
+C: CC="/usr/bin/gcc     -std=c99   -m64"
+C: COBJOPT="-c -o options"
+P: CPUFLAGS="-DSPEC -DNDEBUG"
+P: BENCH_FLAGS=""
+P: BENCH_CFLAGS="-Ispec_qsort -DSPEC_AUTO_SUPPRESS_OPENMP"
+O: OPTIMIZE="-g -O3"
+O: COPTIMIZE=""
+P: PORTABILITY=""
+P: CPORTABILITY=""
+O: EXTRA_CFLAGS="-fno-strict-aliasing -fno-unsafe-math-optimizations -fno-finite-math-only -fgnu89-inline -fcommon"
+O: EXTRA_OPTIMIZE=""
+O: EXTRA_COPTIMIZE=""
+P: EXTRA_PORTABILITY="-DSPEC_LP64"
+P: EXTRA_CPORTABILITY=""
+LINK: "/usr/bin/gcc     -std=c99   -m64      -g -O3          <objects>   -lm         -o options  "
+C: LD="/usr/bin/gcc     -std=c99   -m64"
+O: OPTIMIZE="-g -O3"
+C: MATH_LIBS="-lm"
+C: LDOUT="-o options"
+ CC_VERSION_OPTION:
+gcc (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0
+Copyright (C) 2017 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+  Up to date 505.mcf_r base mytest-m64
+------------------------------------------------------------------------
+When checking options for /home/gem5/spec2017/benchspec/CPU/505.mcf_r/exe/mcf_r_peak.mytest-m64, no checksums were
+  found in the config file.  They will be installed after build.
+When checking executables (/home/gem5/spec2017/benchspec/CPU/505.mcf_r/exe/mcf_r_peak.mytest-m64), no checksums were
+  found in the config file.  They will be installed after build.
+  NOT Building 505.mcf_r peak mytest-m64; nobuild is on
+
+Build successes for intrate: None
+Build errors for intrate: 505.mcf_r(peak; nobuild)
+
+Setting Up Run Directories
+  Setting up 505.mcf_r refrate (ref) base mytest-m64 (1 copy): run_base_refrate_mytest-m64.0000
+-----------------------------------
+Running Benchmarks
+-----------------------------------
+  Running 505.mcf_r refrate (ref) base mytest-m64 (1 copy) [2023-04-03 15:46:31]
+OpenMP environment variables removed: None
+OpenMP environment variables in effect:
+	OMP_NUM_THREADS	=> '1'
+	OMP_THREAD_LIMIT	=> '1'
+Pre-run environment changes:
+	'OMP_NUM_THREADS' added: (value now '1')
+	'OMP_THREAD_LIMIT' added: (value now '1')
+Commands to run (specinvoke command file):
+    -r
+    -N C
+    -C /home/gem5/spec2017/benchspec/CPU/505.mcf_r/run/run_base_refrate_mytest-m64.0000
+    -o inp.out -e inp.err ../run_base_refrate_mytest-m64.0000/mcf_r_base.mytest-m64 inp.in  > inp.out 2>> inp.err (timed)
+Specinvoke: /home/gem5/spec2017/bin/specinvoke -d /home/gem5/spec2017/benchspec/CPU/505.mcf_r/run/run_base_refrate_mytest-m64.0000 -f speccmds.cmd -q -e speccmds.err -o speccmds.stdout
+Issuing command '/home/gem5/spec2017/bin/specinvoke -d /home/gem5/spec2017/benchspec/CPU/505.mcf_r/run/run_base_refrate_mytest-m64.0000 -f speccmds.cmd -q -e speccmds.err -o speccmds.stdout'
+Start command: 2023-04-03 15:46:31 (1680551191.96948)
+Stop command: 2023-04-03 15:53:51 (1680551631.42267)
+Elapsed time for command: 00:07:19 (439.453192949295)
+Workload elapsed time (copy 0 workload 1) = 439.197232 seconds
+Copy 0 of 505.mcf_r (base refrate) run 1 finished at 2023-04-03 15:53:51.  Total elapsed time: 439.197232
+OpenMP environment variables removed: None
+OpenMP environment variables in effect:
+	OMP_NUM_THREADS	=> '1'
+	OMP_THREAD_LIMIT	=> '1'
+Pre-run environment changes:
+	'OMP_NUM_THREADS' added: (value now '1')
+	'OMP_THREAD_LIMIT' added: (value now '1')
+comparing 'inp.out' with 
+comparing 'mcf.out' with 
+Specinvoke: /home/gem5/spec2017/bin/specinvoke -d /home/gem5/spec2017/benchspec/CPU/505.mcf_r/run/run_base_refrate_mytest-m64.0000 -f compare.cmd -E -e compare.err -o compare.stdout
+Issuing command '/home/gem5/spec2017/bin/specinvoke -d /home/gem5/spec2017/benchspec/CPU/505.mcf_r/run/run_base_refrate_mytest-m64.0000 -f compare.cmd -E -e compare.err -o compare.stdout'
+Start command: 2023-04-03 15:53:51 (1680551631.77662)
+Stop command: 2023-04-03 15:53:52 (1680551632.41652)
+Elapsed time for command: 00:00:00 (0.639902830123901)
+Benchmark Times:
+  Run Start:    2023-04-03 15:46:31 (1680551191)
+  Rate Start:   2023-04-03 15:46:32 (1680551192.07247)
+  Rate End:     2023-04-03 15:53:51 (1680551631.2697)
+  Run Stop:     2023-04-03 15:53:51 (1680551631)
+  Run Elapsed:  00:07:20 (440)
+  Run Reported: 00:07:19 (439 197232007 439.197)
+ Success 505.mcf_r base refrate ratio=3.68, runtime=439.197000, copies=1, threads=1, power=0.00W, temp=0.00 degC, humidity=0.00%
+Success: 1x505.mcf_r
+Error: 1x505.mcf_r
+Producing Raw Reports
+ label: mytest-m64
+  workload: refrate (ref)
+   benchset: intspeed
+   benchset: intrate
+   metric: SPECrate2017_int_base, SPECrate2017_int_peak
+    format: raw -> /home/gem5/spec2017/result/CPU2017.001.intrate.refrate.rsf
+Parsing flags for 505.mcf_r base: done
+Doing flag reduction: done
+    format: flags -> /home/gem5/spec2017/result/CPU2017.001.intrate.refrate.flags.html
+    format: cfg -> /home/gem5/spec2017/result/CPU2017.001.intrate.refrate.cfg
+    format: CSV -> /home/gem5/spec2017/result/CPU2017.001.intrate.refrate.csv
+    format: PDF -> /home/gem5/spec2017/result/CPU2017.001.intrate.refrate.pdf
+    format: HTML -> /home/gem5/spec2017/result/CPU2017.001.intrate.refrate.html, /home/gem5/spec2017/result/invalid.gif
+    format: Text -> /home/gem5/spec2017/result/CPU2017.001.intrate.refrate.txt
+   benchset: fpspeed
+   benchset: fprate
+runcpu finished at 2023-04-03 15:53:57; 447 total seconds elapsed
+Info: file_tail(1175): file '/home/gem5/spec2017/tmp/CPU2017.001/templogs/preenv.intrate.001.0.log.debug' was removed and will no longer be followed.  No action is required.
+The log for this run is in /home/gem5/spec2017/result/CPU2017.001.log
+
+runcpu finished at 2023-04-03 15:53:57; 449 total seconds elapsed

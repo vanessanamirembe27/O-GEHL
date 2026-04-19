@@ -1,0 +1,199 @@
+##################################################################################################################################
+#   INVALID RUN -- INVALID RUN -- INVALID RUN -- INVALID RUN -- INVALID RUN                                                      #
+#                                                                                                                                #
+# Complete set of valid runs for peak rate unavailable (523.xalancbmk_r missing)                                                 #
+# Complete set of valid runs for peak rate unavailable (541.leela_r missing)                                                     #
+# Complete set of valid runs for peak rate unavailable (557.xz_r missing)                                                        #
+# Complete set of valid runs for peak rate unavailable (548.exchange2_r missing)                                                 #
+# Complete set of valid runs for peak rate unavailable (505.mcf_r missing)                                                       #
+# Complete set of valid runs for peak rate unavailable (500.perlbench_r missing)                                                 #
+# Complete set of valid runs for peak rate unavailable (520.omnetpp_r missing)                                                   #
+# Complete set of valid runs for peak rate unavailable (525.x264_r missing)                                                      #
+# Complete set of valid runs for peak rate unavailable (502.gcc_r missing)                                                       #
+# Complete set of valid runs for peak rate unavailable (531.deepsjeng_r missing)                                                 #
+# 'reportable' flag not set during run                                                                                           #
+# 523.xalancbmk_r (base) did not have enough runs!                                                                               #
+# 541.leela_r (base) did not have enough runs!                                                                                   #
+# 557.xz_r (base) did not have enough runs!                                                                                      #
+# 548.exchange2_r (base) did not have enough runs!                                                                               #
+# 505.mcf_r (base) did not have enough runs!                                                                                     #
+# 500.perlbench_r (base) did not have enough runs!                                                                               #
+# 520.omnetpp_r (base) did not have enough runs!                                                                                 #
+# 525.x264_r (base) did not have enough runs!                                                                                    #
+# 502.gcc_r (base) did not have enough runs!                                                                                     #
+# 531.deepsjeng_r (base) did not have enough runs!                                                                               #
+# 523.xalancbmk_r (peak) did not have enough runs!                                                                               #
+# 541.leela_r (peak) did not have enough runs!                                                                                   #
+# 557.xz_r (peak) did not have enough runs!                                                                                      #
+# 548.exchange2_r (peak) did not have enough runs!                                                                               #
+# 505.mcf_r (peak) did not have enough runs!                                                                                     #
+# 500.perlbench_r (peak) did not have enough runs!                                                                               #
+# 520.omnetpp_r (peak) did not have enough runs!                                                                                 #
+# 525.x264_r (peak) did not have enough runs!                                                                                    #
+# 502.gcc_r (peak) did not have enough runs!                                                                                     #
+# 531.deepsjeng_r (peak) did not have enough runs!                                                                               #
+#                                                                                                                                #
+#   INVALID RUN -- INVALID RUN -- INVALID RUN -- INVALID RUN -- INVALID RUN                                                      #
+##################################################################################################################################
+                                               SPEC CPU(R)2017 Integer Rate Result
+                                                         My Corporation 
+
+                           CPU2017 License: nnn (Your SPEC license number)          Test date: Apr-2023
+                           Test sponsor: My Corporation                 Hardware availability:         
+                           Tested by:    My Corporation                 Software availability:         
+
+                       Estimated                       Estimated
+                 Base     Base        Base        Peak     Peak        Peak
+Benchmarks       Copies  Run Time     Rate        Copies  Run Time     Rate 
+--------------- -------  ---------  ---------    -------  ---------  ---------
+500.perlbench_r                               NR
+502.gcc_r                                     NR
+505.mcf_r             1        439       3.68  *
+520.omnetpp_r                                 NR
+523.xalancbmk_r                               NR
+525.x264_r                                    NR
+531.deepsjeng_r                               NR
+541.leela_r                                   NR
+548.exchange2_r                               NR
+557.xz_r                                      NR
+=================================================================================
+500.perlbench_r                               NR
+502.gcc_r                                     NR
+505.mcf_r             1        439       3.68  *
+520.omnetpp_r                                 NR
+523.xalancbmk_r                               NR
+525.x264_r                                    NR
+531.deepsjeng_r                               NR
+541.leela_r                                   NR
+548.exchange2_r                               NR
+557.xz_r                                      NR
+ Est. SPECrate(R)2017_int_base           3.68
+ Est. SPECrate(R)2017_int_peak                                            0.00
+
+
+                                                             HARDWARE
+                                                             --------
+            CPU Name: --
+             Max MHz:  
+             Nominal:  
+             Enabled:  cores, -1 chips,  threads/core
+           Orderable:  
+            Cache L1:  
+                  L2:  
+                  L3:  
+               Other:  
+              Memory: --
+             Storage: --
+               Other:  
+
+
+                                                             SOFTWARE
+                                                             --------
+                  OS: --
+            Compiler: C/C++/Fortran: Version 10.1.0 of GCC, the
+                      GNU Compiler Collection
+            Parallel: No
+            Firmware:  
+         File System: --
+        System State: --
+       Base Pointers: 64-bit
+       Peak Pointers: 64-bit
+               Other:  
+    Power Management:  
+
+
+                                                   Environment Variables Notes
+                                                   ---------------------------
+    Environment variables set by runcpu before the start of the run:
+    LD_LIBRARY_PATH = "/usr/lib64/:/usr/lib/:/lib64"
+    
+
+                                                      Compiler Version Notes
+                                                      ----------------------
+    ============================================================================================================
+    C | 505.mcf_r(base)
+    ------------------------------------------------------------------------------------------------------------
+    gcc (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0
+    Copyright (C) 2017 Free Software Foundation, Inc.
+    This is free software; see the source for copying conditions.  There is NO
+    warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+    ------------------------------------------------------------------------------------------------------------
+
+                                                     Base Runtime Environment
+                                                     ------------------------
+C benchmarks:
+
+ 505.mcf_r: No flags used
+
+
+                                                     Base Compiler Invocation
+                                                     ------------------------
+C benchmarks:
+
+ 505.mcf_r: gcc
+
+
+                                                      Base Portability Flags
+                                                      ----------------------
+ 505.mcf_r: -DSPEC_LP64
+
+
+                                                     Base Optimization Flags
+                                                     -----------------------
+C benchmarks:
+
+ 505.mcf_r: -m64 -std=c99 -g -O3 -fno-strict-aliasing -fno-unsafe-math-optimizations -fno-finite-math-only -fgnu89-inline
+
+
+                                                         Base Other Flags
+                                                         ----------------
+C benchmarks:
+
+ 505.mcf_r: -fcommon
+
+
+  SPEC CPU and SPECrate are registered trademarks of the Standard Performance Evaluation Corporation.  All other brand and
+    product names appearing in this result are trademarks or registered trademarks of their respective holders.
+##################################################################################################################################
+#   INVALID RUN -- INVALID RUN -- INVALID RUN -- INVALID RUN -- INVALID RUN                                                      #
+#                                                                                                                                #
+# Complete set of valid runs for peak rate unavailable (523.xalancbmk_r missing)                                                 #
+# Complete set of valid runs for peak rate unavailable (541.leela_r missing)                                                     #
+# Complete set of valid runs for peak rate unavailable (557.xz_r missing)                                                        #
+# Complete set of valid runs for peak rate unavailable (548.exchange2_r missing)                                                 #
+# Complete set of valid runs for peak rate unavailable (505.mcf_r missing)                                                       #
+# Complete set of valid runs for peak rate unavailable (500.perlbench_r missing)                                                 #
+# Complete set of valid runs for peak rate unavailable (520.omnetpp_r missing)                                                   #
+# Complete set of valid runs for peak rate unavailable (525.x264_r missing)                                                      #
+# Complete set of valid runs for peak rate unavailable (502.gcc_r missing)                                                       #
+# Complete set of valid runs for peak rate unavailable (531.deepsjeng_r missing)                                                 #
+# 'reportable' flag not set during run                                                                                           #
+# 523.xalancbmk_r (base) did not have enough runs!                                                                               #
+# 541.leela_r (base) did not have enough runs!                                                                                   #
+# 557.xz_r (base) did not have enough runs!                                                                                      #
+# 548.exchange2_r (base) did not have enough runs!                                                                               #
+# 505.mcf_r (base) did not have enough runs!                                                                                     #
+# 500.perlbench_r (base) did not have enough runs!                                                                               #
+# 520.omnetpp_r (base) did not have enough runs!                                                                                 #
+# 525.x264_r (base) did not have enough runs!                                                                                    #
+# 502.gcc_r (base) did not have enough runs!                                                                                     #
+# 531.deepsjeng_r (base) did not have enough runs!                                                                               #
+# 523.xalancbmk_r (peak) did not have enough runs!                                                                               #
+# 541.leela_r (peak) did not have enough runs!                                                                                   #
+# 557.xz_r (peak) did not have enough runs!                                                                                      #
+# 548.exchange2_r (peak) did not have enough runs!                                                                               #
+# 505.mcf_r (peak) did not have enough runs!                                                                                     #
+# 500.perlbench_r (peak) did not have enough runs!                                                                               #
+# 520.omnetpp_r (peak) did not have enough runs!                                                                                 #
+# 525.x264_r (peak) did not have enough runs!                                                                                    #
+# 502.gcc_r (peak) did not have enough runs!                                                                                     #
+# 531.deepsjeng_r (peak) did not have enough runs!                                                                               #
+#                                                                                                                                #
+#   INVALID RUN -- INVALID RUN -- INVALID RUN -- INVALID RUN -- INVALID RUN                                                      #
+##################################################################################################################################
+----------------------------------------------------------------------------------------------------------------------------------
+For questions about this result, please contact the tester.
+For other inquiries, please contact info@spec.org.
+Copyright 2017-2023 Standard Performance Evaluation Corporation
+Tested with SPEC CPU(R)2017 v1.1.9 on 2023-04-03 15:46:30-0400.
+Report generated on 2023-04-03 15:53:57 by CPU2017 text formatter v6255.

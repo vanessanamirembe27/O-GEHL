@@ -1,0 +1,22 @@
+Directory created.
+Global frequency set at 1000000000000 ticks per second
+      0: board.pc.south_bridge.cmos.rtc: Real-time clock set to Sun Jan  1 00:00:00 2012
+gem5 Simulator System.  https://www.gem5.org
+gem5 is copyrighted software; use the --copyright option for details.
+
+gem5 version 25.1.0.0
+gem5 compiled Apr 16 2026 10:29:14
+gem5 started Apr 16 2026 23:03:31
+gem5 executing on scc-pi5, pid 2586384
+command line: build/X86/gem5.opt configs/example/gem5_library/x86-spec-cpu2017-benchmarks.py --image ../disk-image/spec-2017/spec-2017-image/spec-2017 --partition 1 --benchmark 505.mcf_r --size ref --branchpred OGEHLBP
+
+info: Standard input is not a terminal, disabling listeners.
+info: Using default config
+CPUS:
+[<gem5.components.processors.simple_core.SimpleCore object at 0x1517870ec440>, <gem5.components.processors.simple_core.SimpleCore object at 0x1517870b1590>]
+Running the simulation
+Using KVM cpu
+Done bootling Linux
+Scheduling Warmup
+Warmup Finished
+switching cpus
