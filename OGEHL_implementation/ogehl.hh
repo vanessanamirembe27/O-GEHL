@@ -1,6 +1,5 @@
 //This version is runnable on gem5, but the performance is not verified yet!
 //This file should be created at gem5/src/cpu/pred
-//I will include comments soon --Zhongkun Cheng
 
 //After update all changes, do not forget to rebuild gem5!
 
@@ -30,13 +29,16 @@ namespace gem5
 namespace branch_prediction
 {
 
+//O-GEHL branch predictor: GEHL core + dynamic theta (threshold) + dynamic history length
+//Specific annotations are included in ogehl.cc file
+
 class OGEHLBP : public ConditionalPredictor
 {
   public:
     struct BPHistory
     {
-        uint64_t globalHistoryReg;
-        int outputSum;
+        uint64_t globalHistoryReg;  
+        int outputSum; 
         bool finalPred;
         bool usedLongHistories;
         std::vector<unsigned> tableIndices;
@@ -48,7 +50,7 @@ class OGEHLBP : public ConditionalPredictor
 
     void updateHistories(ThreadID tid, Addr pc, bool uncond, bool taken,
                          Addr target, const StaticInstPtr &inst,
-                         void *&bp_history);
+                         void *&bp_history); 
 
     void squash(ThreadID tid, void *&bp_history);
 
