@@ -314,15 +314,14 @@ OGEHLBP::updateThreshold(bool wrong, bool weak)
     }
 }
 
-
-void
+void 
 OGEHLBP::updateHistoryMode(Addr pc, const OGEHLBP::BPHistory *history,
                            bool wrong, bool weak)
 {
     if (!(wrong || weak)) {
         return;
     }
-
+    // use longest table as reference since longest table aliasing more
     unsigned refTable = numTables - 1;
     if (refTable >= history->tableIndices.size()) {
         return;
@@ -336,25 +335,30 @@ OGEHLBP::updateHistoryMode(Addr pc, const OGEHLBP::BPHistory *history,
     int acMax = (1 << (acBits - 1)) - 1;
     int acMin = -(1 << (acBits - 1));
 
-    uint8_t currentTag = static_cast<uint8_t>(pc & 1);
+    // --- NEW TAG HASHING LOGIC ---
+    // Shift the PC down to drop the empty alignment bits, then XOR it 
+    // with the global history to create a unique branch fingerprint.
+    // Finally, mask it with 0xFF to grab exactly 8 bits for our uint8_t tag.
+    uint8_t currentTag = static_cast<uint8_t>(((pc >> instShiftAmt) ^ history->globalHistoryReg) & 0xFF);
+    // -----------------------------
 
-    if (tagTable[idx] == currentTag) {
+    if (tagTable[idx] == currentTag) { 
         if (ac < acMax) {
             ac++;
         }
-    } else {
+    } else {    // if aliasing happened, decrement ac by 4 to prefer short history length
         ac -= 4;
-	aliasingDetected++;
+        aliasingDetected++; 
         if (ac < acMin) {
             ac = acMin;
         }
     }
 
-    if (ac == acMax) {
+    if (ac == acMax) { // update switch when ac reach max
         useLongHistories = true;
     }
 
-    if (ac == acMin) {
+    if (ac == acMin) { // same for min
         useLongHistories = false;
     }
 
