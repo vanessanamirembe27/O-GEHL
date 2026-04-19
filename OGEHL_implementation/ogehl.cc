@@ -204,11 +204,12 @@ OGEHLBP::updateGlobalHistReg(ThreadID tid, bool taken)
          (taken ? 1 : 0)) & historyRegisterMask;
 }
 
-unsigned
+unsigned // compute index with history folding
 OGEHLBP::computeIndex(Addr pc, uint64_t history, unsigned table) const
 {
     unsigned historyLen;
 
+    // Determind how much history this specific table is allowed to look at
     if (isDynamicTable(table) && longHistoryLengths[table] > 0) {
         historyLen = useLongHistories ?
                      longHistoryLengths[table] :
@@ -217,6 +218,7 @@ OGEHLBP::computeIndex(Addr pc, uint64_t history, unsigned table) const
         historyLen = shortHistoryLengths[table];
     }
 
+    // Create a mask to grab only the requested history length
     uint64_t histMask;
     if (historyLen >= 64) {
         histMask = ~0ULL;
@@ -228,8 +230,17 @@ OGEHLBP::computeIndex(Addr pc, uint64_t history, unsigned table) const
 
     uint64_t truncatedHistory = history & histMask;
 
-    unsigned idx =
-        ((pc >> instShiftAmt) ^ truncatedHistory) & tableIndexMask;
+    // Folding Logic
+    uint64_t foldedHistory = 0;
+
+    unsigned indexBits = floorLog2(tableSize);
+
+    while (truncatedHistory > 0) {
+      foldedHistory ^= (truncatedHistory & tableIndexMask);
+      truncatedHistory >>= indexBits; 
+    }
+    
+    unsigned idx = ((pc >> instShiftAmt) ^ foldedHistory) & tableIndexMask;
 
     return idx;
 }
