@@ -1,6 +1,3 @@
-April 9 by Zhongkun
-benchmark: 505.mcf_r
-Warmup: 4 Billion
-Measurement: 1 Billion
-Misprediction rate = 9123843/845682536 = 1.07%
-Difference between instruction fetched and committed = 4186133840 - 1000000004 = 3.18 Billion
+No stats yet. My running job on SCC was aborted due to SCC power shortage. So going to rerun after power is restored.
+
+Note: It currently took more than 48hrs because I am using ATOMIC instead of KVM

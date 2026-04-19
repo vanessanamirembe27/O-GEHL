@@ -1,19 +1,3 @@
-//This version is runnable on gem5, but the performance is not verified yet!
-//This file should be created at gem5/src/cpu/pred
-//I will include comments soon --Zhongkun Cheng
-
-//After update all changes, do not forget to rebuild gem5!
-
-//import OGEHL to python script ↓
-/*
-from m5.objects import OGEHLBP
-for core in processor._switchable_cores["switch"]:
-    bp = BranchPredictor()
-    bp.conditionalBranchPred =  OGEHLBP()
-    core.core.branchPred = bp 
-*/
-
-
 #ifndef __CPU_PRED_OGEHL_HH__
 #define __CPU_PRED_OGEHL_HH__
 
@@ -35,7 +19,7 @@ class OGEHLBP : public ConditionalPredictor
   public:
     struct BPHistory
     {
-        uint64_t globalHistoryReg;
+        std::vector<bool> globalHistoryReg;
         int outputSum;
         bool finalPred;
         bool usedLongHistories;
@@ -60,7 +44,8 @@ class OGEHLBP : public ConditionalPredictor
     void uncondBranch(ThreadID tid, Addr pc, void *&bp_history);
 
     unsigned getHistoryLength(unsigned table) const;
-    unsigned computeIndex(Addr pc, uint64_t history, unsigned table) const;
+    unsigned computeIndex(Addr pc, const std::vector<bool> &history,
+                          unsigned table) const;
 
     void updateThreshold(bool wrong, bool weak);
     void updateHistoryMode(Addr pc, const BPHistory *history,
@@ -68,14 +53,16 @@ class OGEHLBP : public ConditionalPredictor
 
     bool isDynamicTable(unsigned table) const;
 
-    std::vector<uint64_t> globalHistoryReg;
+    // One arbitrary-length global history per thread.
+    // Newest bit at index 0, oldest bit at index globalHistoryBits-1.
+    std::vector<std::vector<bool>> globalHistoryReg;
 
     unsigned globalHistoryBits;
-    uint64_t historyRegisterMask;
 
     unsigned numTables;
     unsigned tableSize;
     unsigned tableIndexMask;
+    unsigned indexBits;
 
     unsigned ctrBits;
 

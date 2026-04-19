@@ -1,12 +1,8 @@
-//This file should be created at gem5/src/cpu/pred
-//I will include comments soon --Zhongkun
-
 #include "cpu/pred/ogehl.hh"
 
 #include <algorithm>
 #include <cstdlib>
 
-#include "base/bitfield.hh"
 #include "base/intmath.hh"
 
 namespace gem5
@@ -17,10 +13,13 @@ namespace branch_prediction
 
 OGEHLBP::OGEHLBP(const OGEHLBPParams &params)
     : ConditionalPredictor(params),
-      globalHistoryReg(params.numThreads, 0),
+      globalHistoryReg(params.numThreads,
+                       std::vector<bool>(params.global_history_bits, false)),
       globalHistoryBits(params.global_history_bits),
       numTables(params.num_tables),
       tableSize(params.table_size),
+      tableIndexMask(params.table_size - 1),
+      indexBits(floorLog2(params.table_size)),
       ctrBits(params.counter_bits),
       theta(params.theta),
       maxTheta(params.max_theta),
@@ -47,10 +46,12 @@ OGEHLBP::OGEHLBP(const OGEHLBPParams &params)
         fatal("OGEHL long_history_lengths size must equal num_tables.\n");
     }
 
-    historyRegisterMask = mask(globalHistoryBits);
-    tableIndexMask = tableSize - 1;
+    if (globalHistoryBits == 0) {
+        fatal("OGEHL global_history_bits must be > 0.\n");
+    }
 
-    unsigned mid = (1 << (ctrBits - 1));
+    // Initialize counters to weakly taken.
+    unsigned mid = (1U << (ctrBits - 1));
     for (unsigned i = 0; i < numTables; ++i) {
         for (unsigned j = 0; j < tableSize; ++j) {
             for (unsigned k = 0; k < mid; ++k) {
@@ -108,7 +109,7 @@ OGEHLBP::updateHistories(ThreadID tid, Addr pc, bool uncond, bool taken,
 bool
 OGEHLBP::lookup(ThreadID tid, Addr branchAddr, void *&bp_history)
 {
-    uint64_t historyValue = globalHistoryReg[tid];
+    const std::vector<bool> &historyValue = globalHistoryReg[tid];
     int sum = 0;
 
     BPHistory *history = new BPHistory;
@@ -141,6 +142,7 @@ OGEHLBP::squash(ThreadID tid, void *&bp_history)
 
     BPHistory *history = static_cast<BPHistory *>(bp_history);
     globalHistoryReg[tid] = history->globalHistoryReg;
+    useLongHistories = history->usedLongHistories;
 
     delete history;
     bp_history = nullptr;
@@ -158,9 +160,12 @@ OGEHLBP::update(ThreadID tid, Addr branchAddr, bool taken,
     BPHistory *history = static_cast<BPHistory *>(bp_history);
 
     if (squashed) {
-        globalHistoryReg[tid] =
-            ((history->globalHistoryReg << 1) |
-             (taken ? 1 : 0)) & historyRegisterMask;
+        globalHistoryReg[tid] = history->globalHistoryReg;
+        updateGlobalHistReg(tid, taken);
+        useLongHistories = history->usedLongHistories;
+
+        delete history;
+        bp_history = nullptr;
         return;
     }
 
@@ -199,37 +204,34 @@ OGEHLBP::update(ThreadID tid, Addr branchAddr, bool taken,
 void
 OGEHLBP::updateGlobalHistReg(ThreadID tid, bool taken)
 {
-    globalHistoryReg[tid] =
-        ((globalHistoryReg[tid] << 1) |
-         (taken ? 1 : 0)) & historyRegisterMask;
+    if (globalHistoryBits == 0) {
+        return;
+    }
+
+    for (int i = globalHistoryBits - 1; i > 0; --i) {
+        globalHistoryReg[tid][i] = globalHistoryReg[tid][i - 1];
+    }
+    globalHistoryReg[tid][0] = taken;
 }
 
 unsigned
-OGEHLBP::computeIndex(Addr pc, uint64_t history, unsigned table) const
+OGEHLBP::computeIndex(Addr pc, const std::vector<bool> &history,
+                      unsigned table) const
 {
-    unsigned historyLen;
+    unsigned historyLen = getHistoryLength(table);
+    historyLen = std::min(historyLen, globalHistoryBits);
 
-    if (isDynamicTable(table) && longHistoryLengths[table] > 0) {
-        historyLen = useLongHistories ?
-                     longHistoryLengths[table] :
-                     shortHistoryLengths[table];
-    } else {
-        historyLen = shortHistoryLengths[table];
+    unsigned idx = (pc >> instShiftAmt) & tableIndexMask;
+
+    unsigned foldedHist = 0;
+    for (unsigned i = 0; i < historyLen; ++i) {
+        if (history[i]) {
+            foldedHist ^= (1U << (i % indexBits));
+        }
     }
 
-    uint64_t histMask;
-    if (historyLen >= 64) {
-        histMask = ~0ULL;
-    } else if (historyLen == 0) {
-        histMask = 0;
-    } else {
-        histMask = (1ULL << historyLen) - 1;
-    }
-
-    uint64_t truncatedHistory = history & histMask;
-
-    unsigned idx =
-        ((pc >> instShiftAmt) ^ truncatedHistory) & tableIndexMask;
+    idx ^= foldedHist;
+    idx &= tableIndexMask;
 
     return idx;
 }
@@ -267,7 +269,6 @@ OGEHLBP::updateThreshold(bool wrong, bool weak)
     }
 }
 
-
 void
 OGEHLBP::updateHistoryMode(Addr pc, const OGEHLBP::BPHistory *history,
                            bool wrong, bool weak)
@@ -289,7 +290,8 @@ OGEHLBP::updateHistoryMode(Addr pc, const OGEHLBP::BPHistory *history,
     int acMax = (1 << (acBits - 1)) - 1;
     int acMin = -(1 << (acBits - 1));
 
-    uint8_t currentTag = static_cast<uint8_t>(pc & 1);
+    uint8_t currentTag =
+        static_cast<uint8_t>((pc >> instShiftAmt) & 0xFF);
 
     if (tagTable[idx] == currentTag) {
         if (ac < acMax) {
