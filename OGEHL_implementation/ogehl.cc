@@ -60,6 +60,33 @@ OGEHLBP::OGEHLBP(const OGEHLBPParams &params)
     }
 }
 
+void
+OGEHLBP::regStats()
+{
+    // ALWAYS call the parent class regStats first so it prints the default misprediction stats!
+    ConditionalPredictor::regStats();
+
+    thetaIncreases
+        .name(name() + ".thetaIncreases")
+        .desc("Number of times the dynamic threshold (theta) was increased");
+
+    thetaDecreases
+        .name(name() + ".thetaDecreases")
+        .desc("Number of times the dynamic threshold (theta) was decreased");
+
+    longHistoryUsed
+        .name(name() + ".longHistoryUsed")
+        .desc("Number of branch lookups that utilized long history mode");
+
+    shortHistoryUsed
+        .name(name() + ".shortHistoryUsed")
+        .desc("Number of branch lookups that utilized short history mode");
+
+    aliasingDetected
+        .name(name() + ".aliasingDetected")
+        .desc("Number of times aliasing was detected in the tag table");
+}
+
 bool
 OGEHLBP::isDynamicTable(unsigned table) const
 {
@@ -128,6 +155,13 @@ OGEHLBP::lookup(ThreadID tid, Addr branchAddr, void *&bp_history)
     history->outputSum = sum;
     history->finalPred = (sum >= 0);
     bp_history = static_cast<void *>(history);
+
+    // --- NEW STAT TRACKING ---
+    if (useLongHistories) {
+        longHistoryUsed++;
+    } else {
+        shortHistoryUsed++;
+    }
 
     return history->finalPred;
 }
@@ -259,6 +293,7 @@ OGEHLBP::updateThreshold(bool wrong, bool weak)
         if (tc == tcMax) {
             if (theta < maxTheta) {
                 theta++;
+		thetaIncreases++; 
             }
             tc = 0;
         }
@@ -272,6 +307,7 @@ OGEHLBP::updateThreshold(bool wrong, bool weak)
         if (tc == tcMin) {
             if (theta > 0) {
                 theta--;
+		thetaDecreases++;
             }
             tc = 0;
         }
@@ -308,6 +344,7 @@ OGEHLBP::updateHistoryMode(Addr pc, const OGEHLBP::BPHistory *history,
         }
     } else {
         ac -= 4;
+	aliasingDetected++;
         if (ac < acMin) {
             ac = acMin;
         }

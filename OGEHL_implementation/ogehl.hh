@@ -20,6 +20,7 @@ for core in processor._switchable_cores["switch"]:
 #include <vector>
 
 #include "base/sat_counter.hh"
+#include "base/statistics.hh"
 #include "base/types.hh"
 #include "cpu/pred/conditional.hh"
 #include "params/OGEHLBP.hh"
@@ -44,6 +45,8 @@ class OGEHLBP : public ConditionalPredictor
 
     OGEHLBP(const OGEHLBPParams &params);
 
+    void regStats() override; 
+
     bool lookup(ThreadID tid, Addr pc, void *&bp_history);
 
     void updateHistories(ThreadID tid, Addr pc, bool uncond, bool taken,
@@ -67,6 +70,12 @@ class OGEHLBP : public ConditionalPredictor
                            bool wrong, bool weak);
 
     bool isDynamicTable(unsigned table) const;
+
+    statistics::Scalar thetaIncreases;
+    statistics::Scalar thetaDecreases;
+    statistics::Scalar longHistoryUsed;
+    statistics::Scalar shortHistoryUsed;
+    statistics::Scalar aliasingDetected;
 
     std::vector<uint64_t> globalHistoryReg;
 

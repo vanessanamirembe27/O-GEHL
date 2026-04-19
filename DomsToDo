@@ -1,0 +1,8 @@
+[X] Implement History Folding for the Index Hash
+[X] Add Custom gem5 Statistics output
+[ ] Strengthen the Aliasing Tag Table
+
+[ ] Run Job and Record Statistics with new changes
+[ ] Rerun Job with original ogehl.cc and new ouput for baseline statistics
+[ ] Repeat for different benchmarks
+[ ] Summarize results, ogehl overview, and create graphics for report/presentation
