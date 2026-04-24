@@ -4,3 +4,19 @@ Warmup: 4 Billion
 Measurement: 1 Billion
 Misprediction rate = 9123843/845682536 = 1.07%
 Difference between instruction fetched and committed = 4186133840 - 1000000004 = 3.18 Billion
+cpi = 4.81
+
+benchmark: 502
+misprediction rate = 5.61%
+cpi = 1.88
+difference = 0.31B
+
+benchmark: 523
+misprediction rate = 5.55%
+cpi = 3.88
+difference = 0.52B
+
+benchmark: 525
+misprediction rate = 4.44%
+cpi = 2.24
+difference = 0.68B
