@@ -14,3 +14,4 @@ measurement = 1billion
 Misprediction rate = 956582/28479335 = 3.36%
 Difference between instructions fetched and commmitted = 1090530684-1000000002 = 90530682
 CPI = 0.51
+
