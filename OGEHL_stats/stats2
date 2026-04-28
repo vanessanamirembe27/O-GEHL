@@ -6,6 +6,7 @@ Warmup = 4billion
 measurement = 1billion
 Misprediction rate = 2264581/79851925 = 2.84%
 Difference between instructions fetched and commmitted = 1209100859-1000000005 = 209100854
+IPC = 0.86
 CPI = 1.17
 
 benchmark: 502.gcc_r
@@ -13,5 +14,6 @@ Warmup = 4billion
 measurement = 1billion
 Misprediction rate = 956582/28479335 = 3.36%
 Difference between instructions fetched and commmitted = 1090530684-1000000002 = 90530682
+IPC = 1.96
 CPI = 0.51
 
