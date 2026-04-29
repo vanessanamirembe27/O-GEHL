@@ -20,3 +20,8 @@ benchmark: 525
 misprediction rate = 4.44%
 cpi = 2.24
 difference = 0.68B
+
+Benchmark: 520
+misprediction rate = 5.8%
+cpi = 2.05
+difference = 0.348B
