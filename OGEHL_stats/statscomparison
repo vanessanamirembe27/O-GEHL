@@ -14,3 +14,41 @@ Measurement: 100 Million
 Misprediction Rate = 725732 / 18783055 = 3.864%
 Difference between instruction fetched and committed = 154265255 - 100000003 = 54.3 Million
 %Uncommited = 54265252 / 154265255 = 35.177%
+
+April 28th by Dom
+ogehl.cc - Fixed Blind Tables in Branch History Prediction & Implemented Strong Tag Hashing
+Warmup: 1 Billion
+Measurement: 1 Billion
+Benchmark: 500 perlbench
+board.processor.switch0.core.cpi             2.003905                       # CPI: cycles per instruction (core level) ((Cycle/Count))
+board.processor.switch0.core.ipc             0.499026                       # IPC: instructions per cycle (core level) ((Count/Cycle))
+Misprediction Rate = 5786802 / 157536299 = 3.67%
+Difference between instruction fetched and committed = 1358445414 - 1000000001 =
+%Uncommited = 358445413 / 1358445414 = 26.386%
+board.processor.switch0.core.branchPred.conditionalBranchPred.aliasingDetected      5188738                       # Number of times aliasing was detected in the tag table (Unspecified)
+board.processor.switch0.core.branchPred.conditionalBranchPred.longHistoryUsed            0                       # Number of branch lookups that utilized long history mode (Unspecified)
+board.processor.switch0.core.branchPred.conditionalBranchPred.shortHistoryUsed    157536299                       # Number of branch lookups that utilized short history mode (Unspecified)
+board.processor.switch0.core.branchPred.conditionalBranchPred.thetaDecreases        37065                       # Number of times the dynamic threshold (theta) was decreased (Unspecified)
+board.processor.switch0.core.branchPred.conditionalBranchPred.thetaIncreases        37057                       # Number of times the dynamic threshold (theta) was increased (Unspecified)
+
+
+
+
+
+
+
+April 29th by Dom
+ogehl.cc - Fixed Blind Tables in Branch History Prediction & Implemented Strong Tag Hashing
+Warmup: 1 Billion
+Measurement: 1 Billion
+Benchmark: 502 gcc
+bboard.processor.switch0.core.cpi             2.015291                       # CPI: cycles per instruction (core level) ((Cycle/Count))
+board.processor.switch0.core.ipc             0.496206                       # IPC: instructions per cycle (core level) ((Count/Cycle))
+Misprediction Rate = 5790037 / 158103807 = 3.66%
+Difference between instruction fetched and committed = 1368370852 - 1000000001 = 368370851
+%Uncommited = 368370851 / 1368370852 = 26.920%
+board.processor.switch0.core.branchPred.conditionalBranchPred.aliasingDetected      5193212                       # Number of times aliasing was detected in the tag table (Unspecified)
+board.processor.switch0.core.branchPred.conditionalBranchPred.longHistoryUsed            0                       # Number of branch lookups that utilized long history mode (Unspecified)
+board.processor.switch0.core.branchPred.conditionalBranchPred.shortHistoryUsed    158103807                       # Number of branch lookups that utilized short history mode (Unspecified)
+board.processor.switch0.core.branchPred.conditionalBranchPred.thetaDecreases        37150                       # Number of times the dynamic threshold (theta) was decreased (Unspecified)
+board.processor.switch0.core.branchPred.conditionalBranchPred.thetaIncreases        37143                       # Number of times the dynamic threshold (theta) was increased (Unspecified)
